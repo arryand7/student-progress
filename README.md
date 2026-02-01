@@ -81,7 +81,6 @@ Pengaturan disimpan di tabel `settings` dan diterapkan saat boot aplikasi.
 
 ```bash
 composer install
-npm install
 ```
 
 2) Salin env:
@@ -108,8 +107,9 @@ php artisan storage:link
 
 ```bash
 php artisan serve
-npm run dev
 ```
+
+Catatan: Aplikasi menggunakan CDN untuk asset (Tailwind/Alpine/Chart.js), jadi **tidak memerlukan npm build**.
 
 ## SSO Gate SABIRA
 

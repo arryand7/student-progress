@@ -76,9 +76,9 @@
         <!-- Sidebar -->
         <aside 
             :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" 
-            class="fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-primary-700 to-primary-900 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0"
+            class="fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-primary-700 to-primary-900 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 flex flex-col"
         >
-            <div class="flex items-center justify-between h-16 px-6 bg-primary-800">
+            <div class="flex items-center justify-between h-16 px-6 bg-primary-800 shrink-0">
                 <div class="flex items-center space-x-3">
                     @if($appLogo)
                         <img src="{{ asset('storage/' . $appLogo) }}" alt="Logo" class="h-10 w-10 object-contain rounded">
@@ -95,7 +95,7 @@
                 </button>
             </div>
             
-            <nav class="mt-6 px-4">
+            <nav class="mt-6 px-4 flex-1 overflow-y-auto">
                 @auth
                     @include('layouts.partials.sidebar-menu')
                 @endauth
@@ -204,6 +204,10 @@
 
                 @yield('content')
             </main>
+
+            <footer class="px-4 sm:px-6 py-4 text-xs text-gray-500 bg-white border-t border-gray-200 text-center">
+                &copy; {{ date('Y') }} {{ $appName }}. By: Ryand Arifriantoni.
+            </footer>
         </div>
     </div>
 

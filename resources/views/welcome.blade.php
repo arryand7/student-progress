@@ -278,7 +278,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <p class="text-slate-900 font-bold mb-2">MA Unggul SABIRA</p>
             <p class="text-sm text-slate-500 mb-1">Academic Information System</p>
-            <p class="text-xs text-slate-400">&copy; {{ date('Y') }} Elite Class Progress Report. All rights reserved.</p>
+            <p class="text-xs text-slate-400">&copy; {{ date('Y') }} Elite Class Progress Report. By: Ryand Arifriantoni.</p>
         </div>
     </footer>
 

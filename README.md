@@ -2,6 +2,8 @@
 
 Sistem monitoring progres akademik untuk kelas unggulan. Aplikasi ini mendukung input evaluasi mingguan, pengelolaan komponen penilaian, analitik progres siswa, serta integrasi SSO Gate SABIRA.
 
+**Konsep & Perancangan:** Ryand Arifriantoni
+
 ## Ringkasan Fitur
 
 - **Manajemen Program & Mata Pelajaran**

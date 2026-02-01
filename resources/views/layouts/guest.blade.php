@@ -51,7 +51,12 @@
         body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
-<body class="bg-gradient-to-br from-primary-700 to-primary-900 min-h-screen flex items-center justify-center p-4">
-    @yield('content')
+<body class="bg-gradient-to-br from-primary-700 to-primary-900 min-h-screen flex flex-col">
+    <div class="flex-1 flex items-center justify-center p-4">
+        @yield('content')
+    </div>
+    <footer class="pb-6 text-center text-xs text-white/80">
+        &copy; {{ date('Y') }} {{ $appName }}. By: Ryand Arifriantoni.
+    </footer>
 </body>
 </html>

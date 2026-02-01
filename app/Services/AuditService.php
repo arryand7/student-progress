@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\AuditLog;
 use Illuminate\Database\Eloquent\Model;
+use DateTimeInterface;
 
 class AuditService
 {
@@ -20,7 +21,8 @@ class AuditService
      */
     public function logUpdated(Model $model, array $oldValues, ?string $reason = null): AuditLog
     {
-        $newValues = $model->toArray();
+        $newValues = $this->normalizeValues($model->getAttributes());
+        $oldValues = $this->normalizeValues($oldValues);
         
         // Only log changed values
         $changes = array_diff_assoc($newValues, $oldValues);
@@ -73,5 +75,21 @@ class AuditService
     public function logImpersonation(Model $targetUser, ?string $reason = null): AuditLog
     {
         return AuditLog::log('impersonated', $targetUser, null, null, $reason);
+    }
+
+    private function normalizeValues(array $values): array
+    {
+        foreach ($values as $key => $value) {
+            if ($value instanceof DateTimeInterface) {
+                $values[$key] = $value->format('Y-m-d H:i:s');
+                continue;
+            }
+
+            if (is_array($value) || is_object($value)) {
+                $values[$key] = json_encode($value);
+            }
+        }
+
+        return $values;
     }
 }

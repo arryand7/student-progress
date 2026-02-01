@@ -138,6 +138,34 @@
             <h3 class="font-semibold text-gray-800">Pengaturan SSO</h3>
             <p class="text-sm text-gray-500">Atur koneksi ke Gate SSO.</p>
         </div>
+        @php
+            $appUrl = rtrim(config('app.url') ?: request()->getSchemeAndHttpHost(), '/');
+            $loginUrl = $appUrl . '/sso/login';
+            $callbackUrl = $appUrl . '/sso/callback';
+        @endphp
+        <div class="px-6 py-4 border-b border-gray-100 bg-amber-50/60">
+            <div class="flex items-start gap-3">
+                <span class="material-symbols-outlined text-amber-600 mt-0.5">info</span>
+                <div class="text-sm text-amber-900 space-y-2">
+                    <p class="font-medium">Panduan untuk konfigurasi di aplikasi SSO:</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div class="p-3 bg-white border border-amber-100 rounded-lg">
+                            <p class="text-xs text-amber-700 uppercase tracking-wider">Base URL</p>
+                            <p class="font-mono text-amber-900 break-all">{{ $appUrl }}</p>
+                        </div>
+                        <div class="p-3 bg-white border border-amber-100 rounded-lg">
+                            <p class="text-xs text-amber-700 uppercase tracking-wider">Redirect URI</p>
+                            <p class="font-mono text-amber-900 break-all">{{ $callbackUrl }}</p>
+                        </div>
+                        <div class="p-3 bg-white border border-amber-100 rounded-lg">
+                            <p class="text-xs text-amber-700 uppercase tracking-wider">SSO Login URL</p>
+                            <p class="font-mono text-amber-900 break-all">{{ $loginUrl }}</p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-amber-800">Gunakan nilai di atas saat mendaftarkan aplikasi ini pada Gate SSO.</p>
+                </div>
+            </div>
+        </div>
         <form method="POST" action="{{ route('superadmin.settings.update') }}" class="p-6 space-y-4">
             @csrf
             @method('PUT')

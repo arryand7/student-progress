@@ -16,6 +16,7 @@ use App\Http\Controllers\Superadmin\EvaluationLockController;
 use App\Http\Controllers\Superadmin\ImpersonationController;
 use App\Http\Controllers\Superadmin\PermissionController;
 use App\Http\Controllers\Superadmin\SettingsController;
+use App\Http\Controllers\Superadmin\UserManagementController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -316,5 +317,22 @@ Route::middleware(['auth', 'active'])->group(function () {
         Route::put('settings', [SettingsController::class, 'update'])
             ->middleware('permission:access.manage_settings')
             ->name('settings.update');
+
+        // User Management
+        Route::get('users', [UserManagementController::class, 'index'])
+            ->middleware('permission:access.manage_users')
+            ->name('users.index');
+        Route::get('users/create', [UserManagementController::class, 'create'])
+            ->middleware('permission:access.manage_users')
+            ->name('users.create');
+        Route::post('users', [UserManagementController::class, 'store'])
+            ->middleware('permission:access.manage_users')
+            ->name('users.store');
+        Route::get('users/{user}/edit', [UserManagementController::class, 'edit'])
+            ->middleware('permission:access.manage_users')
+            ->name('users.edit');
+        Route::put('users/{user}', [UserManagementController::class, 'update'])
+            ->middleware('permission:access.manage_users')
+            ->name('users.update');
     });
 });

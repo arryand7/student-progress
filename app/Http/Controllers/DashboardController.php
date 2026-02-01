@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\AnalyticsService;
+use App\Models\Enrollment;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -32,7 +33,12 @@ class DashboardController extends Controller
         }
 
         if ($user->isStudent()) {
-            return view('dashboard.student', compact('stats', 'user'));
+            $enrollments = Enrollment::with(['subject', 'program', 'evaluations'])
+                ->active()
+                ->where('user_id', $user->id)
+                ->get();
+
+            return view('dashboard.student', compact('stats', 'user', 'enrollments'));
         }
 
         return view('dashboard.index', compact('stats', 'user'));

@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Services\SettingService;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +23,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        if (Schema::hasTable('settings')) {
+            $settingsService = app(SettingService::class);
+            $settingsService->applyConfig();
+            $publicSettings = $settingsService->all();
+            Arr::forget($publicSettings, [
+                'smtp.password',
+                'sso.client_secret',
+            ]);
+            View::share('appSettings', $publicSettings);
+        }
     }
 }

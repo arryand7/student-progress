@@ -4,16 +4,21 @@
 @section('page-title', 'Manajemen Mata Pelajaran')
 
 @section('content')
+@php
+    $user = auth()->user();
+@endphp
 <div class="space-y-6">
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
             <h2 class="text-xl font-bold text-gray-800">Daftar Mata Pelajaran</h2>
             <p class="text-sm text-gray-500">Kelola mata pelajaran per program</p>
         </div>
-        <a href="{{ route('admin.subjects.create') }}" class="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
-            <span class="material-symbols-outlined mr-2">add</span>
-            Tambah Mapel
-        </a>
+        @if($user->hasPermission('subject.create'))
+            <a href="{{ route('admin.subjects.create') }}" class="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
+                <span class="material-symbols-outlined mr-2">add</span>
+                Tambah Mapel
+            </a>
+        @endif
     </div>
 
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
@@ -71,21 +76,32 @@
                             </td>
                             <td class="px-6 py-4 text-right">
                                 <div class="flex items-center justify-end space-x-2">
-                                    <a href="{{ route('admin.subjects.show', $subject) }}" class="p-2 text-gray-400 hover:text-gray-600" title="Lihat">
-                                        <span class="material-symbols-outlined text-xl">visibility</span>
-                                    </a>
-                                    <a href="{{ route('admin.subjects.edit', $subject) }}" class="p-2 text-gray-400 hover:text-blue-600" title="Edit">
-                                        <span class="material-symbols-outlined text-xl">edit</span>
-                                    </a>
-                                    <a href="{{ route('admin.subjects.components.index', $subject) }}" class="p-2 text-gray-400 hover:text-amber-600" title="Komponen">
-                                        <span class="material-symbols-outlined text-xl">settings</span>
-                                    </a>
-                                    <form method="POST" action="{{ route('admin.subjects.toggle-status', $subject) }}" class="inline">
-                                        @csrf
-                                        <button type="submit" class="p-2 text-gray-400 hover:text-amber-600" title="{{ $subject->is_active ? 'Nonaktifkan' : 'Aktifkan' }}">
-                                            <span class="material-symbols-outlined text-xl">{{ $subject->is_active ? 'toggle_on' : 'toggle_off' }}</span>
-                                        </button>
-                                    </form>
+                                    @if($user->hasPermission('subject.edit'))
+                                        <a href="{{ route('admin.subjects.show', $subject) }}" class="p-2 text-gray-400 hover:text-gray-600" title="Lihat">
+                                            <span class="material-symbols-outlined text-xl">visibility</span>
+                                        </a>
+                                        <a href="{{ route('admin.subjects.edit', $subject) }}" class="p-2 text-gray-400 hover:text-blue-600" title="Edit">
+                                            <span class="material-symbols-outlined text-xl">edit</span>
+                                        </a>
+                                    @endif
+                                    @if(
+                                        $user->hasPermission('component.create')
+                                        || $user->hasPermission('component.edit')
+                                        || $user->hasPermission('component.toggle_active')
+                                        || $user->hasPermission('component.adjust_weight')
+                                    )
+                                        <a href="{{ route('admin.subjects.components.index', $subject) }}" class="p-2 text-gray-400 hover:text-amber-600" title="Komponen">
+                                            <span class="material-symbols-outlined text-xl">settings</span>
+                                        </a>
+                                    @endif
+                                    @if($user->hasPermission('subject.deactivate'))
+                                        <form method="POST" action="{{ route('admin.subjects.toggle-status', $subject) }}" class="inline">
+                                            @csrf
+                                            <button type="submit" class="p-2 text-gray-400 hover:text-amber-600" title="{{ $subject->is_active ? 'Nonaktifkan' : 'Aktifkan' }}">
+                                                <span class="material-symbols-outlined text-xl">{{ $subject->is_active ? 'toggle_on' : 'toggle_off' }}</span>
+                                            </button>
+                                        </form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>

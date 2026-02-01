@@ -15,6 +15,7 @@ use App\Http\Controllers\Superadmin\AuditLogController;
 use App\Http\Controllers\Superadmin\EvaluationLockController;
 use App\Http\Controllers\Superadmin\ImpersonationController;
 use App\Http\Controllers\Superadmin\PermissionController;
+use App\Http\Controllers\Superadmin\SettingsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,6 +25,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    if (auth()->check()) {
+        return redirect()->route('dashboard');
+    }
     return view('welcome');
 })->name('home');
 
@@ -76,7 +80,7 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::prefix('admin')->name('admin.')->group(function () {
         // Pembina Assignments
         Route::get('pembina-assignments', [PembinaAssignmentController::class, 'index'])
-            ->middleware('permission:subject.edit')
+            ->middleware('permission:subject.create,subject.edit,subject.deactivate,component.create,component.edit,component.toggle_active,component.adjust_weight')
             ->name('pembina-assignments.index');
         Route::put('pembina-assignments/{subject}', [PembinaAssignmentController::class, 'update'])
             ->middleware('permission:subject.edit')
@@ -110,7 +114,7 @@ Route::middleware(['auth', 'active'])->group(function () {
 
         // Subjects
         Route::get('subjects', [SubjectController::class, 'index'])
-            ->middleware('permission:subject.edit')
+            ->middleware('permission:subject.create,subject.edit,subject.deactivate,component.create,component.edit,component.toggle_active,component.adjust_weight')
             ->name('subjects.index');
         Route::get('subjects/create', [SubjectController::class, 'create'])
             ->middleware('permission:subject.create')
@@ -304,5 +308,13 @@ Route::middleware(['auth', 'active'])->group(function () {
         Route::post('impersonate/stop', [ImpersonationController::class, 'stop'])
             ->middleware('permission:access.impersonate_user')
             ->name('impersonate.stop');
+
+        // Settings
+        Route::get('settings', [SettingsController::class, 'index'])
+            ->middleware('permission:access.manage_settings')
+            ->name('settings.index');
+        Route::put('settings', [SettingsController::class, 'update'])
+            ->middleware('permission:access.manage_settings')
+            ->name('settings.update');
     });
 });

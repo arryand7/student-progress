@@ -122,6 +122,14 @@
                 Hak Akses
             </a>
         @endif
+
+        @if($user->hasPermission('access.manage_settings'))
+            <a href="{{ route('superadmin.settings.index') }}" 
+               class="flex items-center px-4 py-3 rounded-lg text-primary-100 hover:bg-primary-600 transition-colors {{ request()->routeIs('superadmin.settings.*') ? 'bg-primary-600' : '' }}">
+                <span class="material-symbols-outlined mr-3">settings</span>
+                Pengaturan
+            </a>
+        @endif
         
         @if($user->hasPermission('access.view_audit_log'))
             <a href="{{ route('superadmin.audit-logs.index') }}" 

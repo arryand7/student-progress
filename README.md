@@ -1,59 +1,165 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Elite Class Progress Report - MA Unggul SABIRA
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistem monitoring progres akademik untuk kelas unggulan. Aplikasi ini mendukung input evaluasi mingguan, pengelolaan komponen penilaian, analitik progres siswa, serta integrasi SSO Gate SABIRA.
 
-## About Laravel
+## Ringkasan Fitur
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Manajemen Program & Mata Pelajaran**
+  - Buat/edit program dan mata pelajaran.
+  - Status aktif/nonaktif.
+- **Komponen Penilaian**
+  - Buat/edit komponen per mata pelajaran.
+  - Atur bobot, aktif/nonaktif, urutan.
+- **Enrollment (Pendaftaran Siswa)**
+  - Assign siswa ke mata pelajaran.
+  - Aktivasi/deaktivasi enrollment.
+- **Evaluasi Mingguan**
+  - Input evaluasi per siswa per minggu.
+  - Lock evaluasi (pembina) dan unlock (superadmin).
+- **Analitik Progres**
+  - Tren mingguan per siswa.
+  - Perbandingan progres antar siswa (line chart).
+  - Filter timeframe (4/8/12 minggu, 1/3/6/12 bulan).
+- **RBAC & Audit Log**
+  - Hak akses berbasis role + permission.
+  - Audit log perubahan data.
+- **SSO Gate SABIRA**
+  - Login via SSO (OIDC/OAuth2).
+- **Superadmin Settings**
+  - Pengaturan umum (nama, tagline, deskripsi, logo).
+  - Server (SMTP, SSO) dapat diatur lewat UI.
+  - Secret sensitif terenkripsi di database.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Role & Akses
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Role utama:
+- **Superadmin**: full access + unlock evaluasi + settings
+- **Admin**: manajemen program, mapel, komponen, enrollment
+- **Pembina**: input evaluasi, analitik progres, dan akses mapel yang ditugaskan
+- **Siswa**: melihat progres pribadi
 
-## Learning Laravel
+Hak akses diatur via **Superadmin > Hak Akses**.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## Alur Aplikasi (Ringkas)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+1. **Admin/Superadmin** membuat program & mata pelajaran.
+2. **Admin/Superadmin** membuat komponen penilaian per mapel.
+3. **Admin/Superadmin** assign pembina ke mapel (penugasan).
+4. **Admin/Pembina** assign siswa ke mapel (enrollment) sesuai scope penugasan.
+5. **Pembina** input evaluasi mingguan (komponen + skor total).
+6. **Pembina** dapat lock evaluasi. **Superadmin** bisa unlock.
+7. **Pembina/Siswa** memantau progres di dashboard dan halaman analitik.
 
-## Laravel Sponsors
+## Struktur Modul Utama
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- `app/Http/Controllers/Admin` — program, mapel, komponen, enrollment, pembina assignment
+- `app/Http/Controllers/Pembina` — evaluasi, progress
+- `app/Http/Controllers/Student` — dashboard & progres siswa
+- `app/Http/Controllers/Superadmin` — permissions, audit logs, settings
+- `app/Services` — analytics, evaluation, settings
+- `resources/views` — UI
+- `database/seeders` — roles, permissions, demo data
 
-### Premium Partners
+## Konfigurasi Settings
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Pengaturan disimpan di tabel `settings` dan diterapkan saat boot aplikasi.
 
-## Contributing
+**General**
+- `general.app_name`, `general.app_tagline`, `general.app_description`, `general.app_logo`
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+**SMTP**
+- `smtp.host`, `smtp.port`, `smtp.username`, `smtp.password`, `smtp.encryption`, `smtp.from_name`, `smtp.from_address`
 
-## Code of Conduct
+**SSO**
+- `sso.base_url`, `sso.client_id`, `sso.client_secret`, `sso.redirect_uri`, `sso.authorize_endpoint`, `sso.token_endpoint`, `sso.userinfo_endpoint`, `sso.scopes`
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+> `smtp.password` dan `sso.client_secret` disimpan terenkripsi di database.
 
-## Security Vulnerabilities
+## Setup Lokal
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+1) Install dependencies:
 
-## License
+```bash
+composer install
+npm install
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+2) Salin env:
+
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+3) Migrasi + seed:
+
+```bash
+php artisan migrate
+php artisan db:seed
+```
+
+4) Storage link (logo/settings):
+
+```bash
+php artisan storage:link
+```
+
+5) Jalankan aplikasi:
+
+```bash
+php artisan serve
+npm run dev
+```
+
+## SSO Gate SABIRA
+
+Konfigurasi SSO bisa lewat **Superadmin > Pengaturan**, atau langsung di `.env` / `config/sso.php`.
+
+Pastikan endpoint `authorize`, `token`, `userinfo` sesuai aplikasi Gate SSO Anda.
+
+## Seeder & Demo Data
+
+- **Default user** hanya dibuat pada **non-production**.
+- **DemoSeeder** (local env) membuat data program, mapel, komponen, enrollments, dan evaluasi mingguan.
+
+## Testing
+
+```bash
+php artisan test
+```
+
+## Catatan Deployment (VPS)
+
+Sebelum deploy:
+- `APP_ENV=production`, `APP_DEBUG=false`, `APP_KEY` terisi
+- Pastikan konfigurasi DB, SMTP, SSO sudah benar
+- Jalankan:
+
+```bash
+php artisan migrate --force
+php artisan storage:link
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
+
+Catatan penting:
+- Seeder default user **tidak dibuat** di production.
+- Buat akun superadmin secara manual (tinker) bila perlu.
+
+Contoh pembuatan superadmin:
+
+```bash
+php artisan tinker
+>>> $u = App\Models\User::create([
+... 'name' => 'Super Administrator',
+... 'email' => 'superadmin@sabira.sch.id',
+... 'password' => bcrypt('password'),
+... 'is_active' => true,
+... ]);
+>>> $u->roles()->sync([App\Models\Role::where('name','superadmin')->first()->id]);
+```
+
+---
+
+Jika butuh dokumentasi teknis tambahan (API, ERD, arsitektur deployment), beri tahu saya.

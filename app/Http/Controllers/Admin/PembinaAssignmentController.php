@@ -12,13 +12,23 @@ class PembinaAssignmentController extends Controller
     /**
      * Show assignment matrix for pembina -> subject.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $subjects = Subject::with(['program', 'pembinas'])->orderBy('name')->get();
-        $pembinas = User::whereHas('roles', fn($q) => $q->where('name', 'pembina'))
-            ->active()
-            ->orderBy('name')
-            ->get();
+        $user = $request->user();
+
+        $subjectsQuery = Subject::with(['program', 'pembinas'])->orderBy('name');
+        if ($user->isPembina() && !$user->isAdmin() && !$user->isSuperadmin()) {
+            $subjectsQuery->whereHas('pembinas', fn($q) => $q->where('users.id', $user->id));
+        }
+
+        $subjects = $subjectsQuery->get();
+        $pembinas = collect();
+        if ($user->hasPermission('subject.edit')) {
+            $pembinas = User::whereHas('roles', fn($q) => $q->where('name', 'pembina'))
+                ->active()
+                ->orderBy('name')
+                ->get();
+        }
 
         return view('admin.pembina-assignments.index', compact('subjects', 'pembinas'));
     }

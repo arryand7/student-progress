@@ -3,7 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Login') - MA Unggul SABIRA</title>
+    @php
+        $appSettings = $appSettings ?? [];
+        $appName = data_get($appSettings, 'general.app_name', config('app.name') ?: 'Elite Class Progress Report');
+        $appTagline = data_get($appSettings, 'general.app_tagline', 'MA Unggul SABIRA');
+        $appDescription = data_get($appSettings, 'general.app_description');
+        $appLogo = data_get($appSettings, 'general.app_logo');
+    @endphp
+    <title>@yield('title', 'Login') - {{ $appTagline }}</title>
+    @if($appDescription)
+        <meta name="description" content="{{ $appDescription }}">
+    @endif
+    @if($appLogo)
+        <link rel="icon" href="{{ asset('storage/' . $appLogo) }}">
+    @endif
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>

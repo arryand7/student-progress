@@ -4,7 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Elite Class Progress Report') - MA Unggul SABIRA</title>
+    @php
+        $appSettings = $appSettings ?? [];
+        $appName = data_get($appSettings, 'general.app_name', config('app.name') ?: 'Elite Class Progress Report');
+        $appTagline = data_get($appSettings, 'general.app_tagline', 'MA Unggul SABIRA');
+        $appDescription = data_get($appSettings, 'general.app_description');
+        $appLogo = data_get($appSettings, 'general.app_logo');
+    @endphp
+    <title>@yield('title', $appName) - {{ $appTagline }}</title>
+    @if($appDescription)
+        <meta name="description" content="{{ $appDescription }}">
+    @endif
+    @if($appLogo)
+        <link rel="icon" href="{{ asset('storage/' . $appLogo) }}">
+    @endif
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -53,6 +66,7 @@
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
+        [x-cloak] { display: none !important; }
     </style>
     
     @stack('styles')
@@ -66,10 +80,14 @@
         >
             <div class="flex items-center justify-between h-16 px-6 bg-primary-800">
                 <div class="flex items-center space-x-3">
-                    <span class="material-symbols-outlined text-white text-3xl">school</span>
+                    @if($appLogo)
+                        <img src="{{ asset('storage/' . $appLogo) }}" alt="Logo" class="h-10 w-10 object-contain rounded">
+                    @else
+                        <span class="material-symbols-outlined text-white text-3xl">school</span>
+                    @endif
                     <div>
-                        <h1 class="text-white font-bold text-lg leading-tight">SABIRA</h1>
-                        <p class="text-primary-200 text-xs">Elite Class Progress</p>
+                        <h1 class="text-white font-bold text-lg leading-tight">{{ $appName }}</h1>
+                        <p class="text-primary-200 text-xs">{{ $appTagline }}</p>
                     </div>
                 </div>
                 <button @click="sidebarOpen = false" class="lg:hidden text-white">
@@ -191,9 +209,10 @@
 
     <!-- Overlay for mobile sidebar -->
     <div 
+        x-cloak
         x-show="sidebarOpen" 
         @click="sidebarOpen = false"
-        class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+        class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden hidden"
         x-transition:enter="transition-opacity ease-linear duration-300"
         x-transition:enter-start="opacity-0"
         x-transition:enter-end="opacity-100"

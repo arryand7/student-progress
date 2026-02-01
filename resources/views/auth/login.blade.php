@@ -3,15 +3,25 @@
 @section('title', 'Login')
 
 @section('content')
+@php
+    $appSettings = $appSettings ?? [];
+    $appName = data_get($appSettings, 'general.app_name', config('app.name') ?: 'Elite Class Progress Report');
+    $appTagline = data_get($appSettings, 'general.app_tagline', 'MA Unggul SABIRA');
+    $appLogo = data_get($appSettings, 'general.app_logo');
+@endphp
 <div class="w-full max-w-md">
     <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
         <!-- Header -->
         <div class="bg-gradient-to-r from-primary-600 to-primary-700 px-8 py-10 text-center">
-            <div class="w-20 h-20 bg-white/20 rounded-2xl mx-auto flex items-center justify-center mb-4">
-                <span class="material-symbols-outlined text-white text-4xl">school</span>
+            <div class="w-20 h-20 bg-white/20 rounded-2xl mx-auto flex items-center justify-center mb-4 overflow-hidden">
+                @if($appLogo)
+                    <img src="{{ asset('storage/' . $appLogo) }}" alt="Logo" class="h-16 w-16 object-contain">
+                @else
+                    <span class="material-symbols-outlined text-white text-4xl">school</span>
+                @endif
             </div>
-            <h1 class="text-2xl font-bold text-white">Elite Class Progress</h1>
-            <p class="text-primary-100 mt-2">MA Unggul SABIRA</p>
+            <h1 class="text-2xl font-bold text-white">{{ $appName }}</h1>
+            <p class="text-primary-100 mt-2">{{ $appTagline }}</p>
         </div>
 
         <!-- Form -->
@@ -100,18 +110,6 @@
                     Masuk
                 </button>
             </form>
-
-            <!-- Demo Accounts Info -->
-            <div class="mt-8 p-4 bg-gray-50 rounded-xl">
-                <p class="text-xs font-semibold text-gray-500 uppercase mb-3">Demo Accounts</p>
-                <div class="space-y-2 text-sm text-gray-600">
-                    <p><strong>Superadmin:</strong> superadmin@sabira.sch.id</p>
-                    <p><strong>Admin:</strong> admin@sabira.sch.id</p>
-                    <p><strong>Pembina:</strong> pembina@sabira.sch.id</p>
-                    <p><strong>Siswa:</strong> siswa@sabira.sch.id</p>
-                    <p class="text-gray-400">Password: password</p>
-                </div>
-            </div>
         </div>
     </div>
 </div>

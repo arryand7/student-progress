@@ -56,6 +56,7 @@ class PermissionSeeder extends Seeder
 
             // Access Control
             ['name' => 'access.manage_permissions', 'category' => 'access', 'description' => 'Manage role permissions', 'is_configurable' => true],
+            ['name' => 'access.manage_settings', 'category' => 'access', 'description' => 'Manage system settings', 'is_configurable' => true],
             ['name' => 'access.view_audit_log', 'category' => 'access', 'description' => 'View audit logs', 'is_configurable' => true],
             ['name' => 'access.impersonate_user', 'category' => 'access', 'description' => 'Impersonate other users', 'is_configurable' => true],
         ];

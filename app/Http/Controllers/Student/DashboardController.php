@@ -32,7 +32,7 @@ class DashboardController extends Controller
             ->with(['subject', 'program', 'evaluations' => fn($q) => $q->where('year', $year)->orderByDesc('week_number')->limit(5)])
             ->get();
 
-        return view('student.dashboard', compact('user', 'stats', 'enrollments', 'year'));
+        return view('dashboard.student', compact('user', 'stats', 'enrollments', 'year'));
     }
 
     /**

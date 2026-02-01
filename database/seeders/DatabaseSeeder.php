@@ -28,48 +28,47 @@ class DatabaseSeeder extends Seeder
             $this->call(DemoSeeder::class);
         }
 
-        // Create default superadmin user
-        $superadmin = User::updateOrCreate(
-            ['email' => 'superadmin@sabira.sch.id'],
-            [
-                'name' => 'Super Administrator',
-                'password' => Hash::make('password'),
-                'is_active' => true,
-            ]
-        );
-        $superadmin->roles()->sync([Role::where('name', 'superadmin')->first()->id]);
+        // Create default users only for non-production environments.
+        if (!app()->environment('production')) {
+            $superadmin = User::updateOrCreate(
+                ['email' => 'superadmin@sabira.sch.id'],
+                [
+                    'name' => 'Super Administrator',
+                    'password' => Hash::make('password'),
+                    'is_active' => true,
+                ]
+            );
+            $superadmin->roles()->sync([Role::where('name', 'superadmin')->first()->id]);
 
-        // Create default admin user
-        $admin = User::updateOrCreate(
-            ['email' => 'admin@sabira.sch.id'],
-            [
-                'name' => 'Administrator',
-                'password' => Hash::make('password'),
-                'is_active' => true,
-            ]
-        );
-        $admin->roles()->sync([Role::where('name', 'admin')->first()->id]);
+            $admin = User::updateOrCreate(
+                ['email' => 'admin@sabira.sch.id'],
+                [
+                    'name' => 'Administrator',
+                    'password' => Hash::make('password'),
+                    'is_active' => true,
+                ]
+            );
+            $admin->roles()->sync([Role::where('name', 'admin')->first()->id]);
 
-        // Create default pembina user
-        $pembina = User::updateOrCreate(
-            ['email' => 'pembina@sabira.sch.id'],
-            [
-                'name' => 'Pembina OSN',
-                'password' => Hash::make('password'),
-                'is_active' => true,
-            ]
-        );
-        $pembina->roles()->sync([Role::where('name', 'pembina')->first()->id]);
+            $pembina = User::updateOrCreate(
+                ['email' => 'pembina@sabira.sch.id'],
+                [
+                    'name' => 'Pembina OSN',
+                    'password' => Hash::make('password'),
+                    'is_active' => true,
+                ]
+            );
+            $pembina->roles()->sync([Role::where('name', 'pembina')->first()->id]);
 
-        // Create default student user
-        $student = User::updateOrCreate(
-            ['email' => 'siswa@sabira.sch.id'],
-            [
-                'name' => 'Siswa Test',
-                'password' => Hash::make('password'),
-                'is_active' => true,
-            ]
-        );
-        $student->roles()->sync([Role::where('name', 'student')->first()->id]);
+            $student = User::updateOrCreate(
+                ['email' => 'siswa@sabira.sch.id'],
+                [
+                    'name' => 'Siswa Test',
+                    'password' => Hash::make('password'),
+                    'is_active' => true,
+                ]
+            );
+            $student->roles()->sync([Role::where('name', 'student')->first()->id]);
+        }
     }
 }
